@@ -42,7 +42,7 @@ public class OrderController {
         Integer total = userMapper.userTotal();
         List<UserOrderResponse> list = userMapper.lastOrder((page - 1) * pers, pers);
         Page<List<UserOrderResponse>> objectPage = new Page<>(total, list, page, pers);
-        return CommonResult.ok(objectPage);
+        return CommonResult.ok(objectPage, "操作成功");
     }
 
 }
