@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.xsword.order.mapper.UserMapper">
+
+    <select id="userTotal" resultType="Integer">
+        select count(*)
+        from p_order o
+                 right join p_user u on o.user_id = u.id
+    </select>
+
+    <select id="lastOrder" resultType="UserOrderResponse">
+        select u.id,
+               u.nickname,
+               u.mobile,
+               o.product_name as productName,
+               o.total_price  as totalPrice,
+               o.count,
+               o.unit_price   as unitPrice,
+               o.status,
+               o.pay_type     as payType,
+               o.created_at   as createdAt,
+               o.updated_at   as updatedAt
+        from p_order o
+                 right join p_user u on o.user_id = u.id
+        where o.created_at in (select max(created_at) from p_order where user_id = o.user_id)
+           or o.user_id is null
+        group by u.id
+        order by o.created_at desc
+            limit #{page}, #{pers}
+    </select>
+
+</mapper>
